@@ -4,10 +4,11 @@ import { AppState } from '../store';
 import flat from 'flat';
 import {
     Culture,
+    Element,
     MapElement,
-    MapElementTranslation,
-    saveMapElement,
-    addMapElementTranslation
+    ElementTranslation,
+    saveElement,
+    addElementTranslation
 } from '../Flow/FlowRedux';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -17,22 +18,24 @@ import TranslationInput from './TranslationInput';
 import LoadableButton from '../LoadableButton';
 import { useNavigation } from 'react-navi';
 
-interface MapElementPageProps {
+interface ElementPageProps {
     cultures: Culture[]
     flow: string
     isSaving: boolean
-    mapElement: MapElement
+    element: Element
 
-    addMapElementTranslation(translation: MapElementTranslation): void
+    addElementTranslation(translation: ElementTranslation): void
     saveMapElement(mapElement: MapElement): Promise<void>
 }
 
-function MapElementPage(props: MapElementPageProps) {
+function ElementPage(props: ElementPageProps) {
     const navigation = useNavigation();
 
-    const { cultures, flow, isSaving, mapElement } = props;
+    const { cultures, flow, isSaving, element } = props;
 
-    const keys = flat(mapElement) as any;
+    console.log(props);
+
+    const keys = flat(element) as any;
 
     const filtered = Object.keys(keys)
         .filter(key => key.endsWith('ContentValueId'))
@@ -43,7 +46,7 @@ function MapElementPage(props: MapElementPageProps) {
         }, {});
 
     const onChange = (culture: string, id: string, value: string) => {
-        props.addMapElementTranslation({
+        props.addElementTranslation({
             culture: culture,
             id: id,
             value: value
@@ -51,17 +54,17 @@ function MapElementPage(props: MapElementPageProps) {
     };
 
     const onSave = async () => {
-        props.saveMapElement(props.mapElement)
+        props.saveMapElement(props.element)
             .then(async () => await navigation.navigate('/flow/' + flow));
     };
 
     // We want to be able to translate any content value for every culture in the tenant
     const availableCultures = cultures.map(culture => {
-        const translations = Object.entries(filtered).map(([property, contentValueId]) => {
+        const translations = Object.entries(filtered).map(([propertyName, contentValueId]) => {
             let currentValue = ['', ''] as [string, string];
 
             // If there is a currently defined translation for this culture, find it
-            let cultureTranslations = mapElement.contentValueDocument.translations[culture.id];
+            let cultureTranslations = element.contentValueDocument.translations[culture.id];
             if (cultureTranslations && cultureTranslations.contentValues) {
                 let value = Object.entries(cultureTranslations.contentValues)
                     .find(([id]) => contentValueId === id);
@@ -72,9 +75,14 @@ function MapElementPage(props: MapElementPageProps) {
             }
 
             return (
-                <Col lg={ 12 } key={ property }>
-                    <TranslationInput contentValueId={ contentValueId as string } culture={ culture.id }
-                                      currentValue={ currentValue } onChange={ onChange } />
+                <Col lg={ 12 } key={ propertyName }>
+                    <TranslationInput
+                        contentValueId={ contentValueId as string }
+                        culture={ culture.id }
+                        currentValue={ currentValue }
+                        onChange={ onChange }
+                        propertyName={ propertyName }
+                    />
                 </Col>
             );
         });
@@ -102,7 +110,7 @@ function MapElementPage(props: MapElementPageProps) {
                     Map Elements
                 </BreadcrumbItem>
                 <BreadcrumbItem active>
-                    { mapElement.developerName }
+                    { element.developerName }
                 </BreadcrumbItem>
             </Breadcrumb>
 
@@ -124,12 +132,12 @@ function MapElementPage(props: MapElementPageProps) {
 const mapStateToProps = (state: AppState) => ({
     cultures: state.flow.cultures,
     isSaving: state.flow.isSaving,
-    mapElement: state.flow.currentMapElement
+    element: state.flow.currentElement
 });
 
 const mapDispatchToProps = ({
-    addMapElementTranslation,
-    saveMapElement
+    addElementTranslation,
+    saveMapElement: saveElement
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapElementPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ElementPage);

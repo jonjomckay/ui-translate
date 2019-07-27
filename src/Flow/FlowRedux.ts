@@ -8,7 +8,7 @@ export const SET_CULTURES = 'SET_CULTURES';
 export const SET_FLOW = 'SET_FLOW';
 export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const SET_IS_SAVING = 'SET_IS_SAVING';
-export const SET_CURRENT_MAP_ELEMENT = 'SET_CURRENT_MAP_ELEMENT';
+export const SET_CURRENT_ELEMENT = 'SET_CURRENT_ELEMENT';
 
 // Actions
 interface SaveMapElementAction {
@@ -36,14 +36,15 @@ interface SetIsSavingAction {
     isSaving: boolean
 }
 
-interface SetCurrentMapElement {
-    type: typeof SET_CURRENT_MAP_ELEMENT
-    mapElement: MapElement
+interface SetCurrentElement {
+    type: typeof SET_CURRENT_ELEMENT
+    element: Element
+    kind: string
 }
 
-export type FlowRedux = SaveMapElementAction | SetCulturesAction | SetFlowAction | SetIsLoadingAction | SetIsSavingAction | SetCurrentMapElement;
+export type FlowRedux = SaveMapElementAction | SetCulturesAction | SetFlowAction | SetIsLoadingAction | SetIsSavingAction | SetCurrentElement;
 
-export const saveMapElement = (mapElement: MapElement): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch, getState) => {
+export const saveElement = (element: Element): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch, getState) => {
     const state = getState();
 
     dispatch({
@@ -51,7 +52,20 @@ export const saveMapElement = (mapElement: MapElement): ThunkAction<Promise<void
         isSaving: true
     });
 
-    return axios.post('https://flow.boomi.com/api/translate/1/flow/' + state.flow.flow.id + '/d91031d7-1ddd-427c-a93c-16fc0c5756c5/element/map', mapElement)
+    let url;
+
+    switch (state.flow.currentElementKind) {
+        case 'group':
+        case 'map':
+        case 'navigation':
+            url = 'https://flow.boomi.com/api/translate/1/flow/' + state.flow.flow.id + '/d91031d7-1ddd-427c-a93c-16fc0c5756c5/element/' + state.flow.currentElementKind;
+            break;
+        default:
+            url = 'https://flow.boomi.com/api/translate/1/element/' + state.flow.currentElementKind;
+            break;
+    }
+
+    return axios.post(url, element)
         .then(() => {
             dispatch({
                 type: SET_IS_SAVING,
@@ -60,28 +74,30 @@ export const saveMapElement = (mapElement: MapElement): ThunkAction<Promise<void
         });
 };
 
-export const addMapElementTranslation = (translation: MapElementTranslation): ThunkAction<void, AppState, null, Action<string>> => async (dispatch, getState) => {
+export const addElementTranslation = (translation: ElementTranslation): ThunkAction<void, AppState, null, Action<string>> => async (dispatch, getState) => {
     const state = getState();
 
-    const currentMapElement = state.flow.currentMapElement;
+    const currentElement = state.flow.currentElement;
+    const currentElementKind = state.flow.currentElementKind;
 
     // If the current culture already exists in the element, we just append to it, otherwise, we need to create it
-    if (currentMapElement.contentValueDocument.translations[translation.culture] === undefined ||
-        currentMapElement.contentValueDocument.translations[translation.culture].contentValues === undefined ||
-        currentMapElement.contentValueDocument.translations[translation.culture].contentValues === null) {
-        currentMapElement.contentValueDocument.translations[translation.culture] = {
+    if (currentElement.contentValueDocument.translations[translation.culture] === undefined ||
+        currentElement.contentValueDocument.translations[translation.culture].contentValues === undefined ||
+        currentElement.contentValueDocument.translations[translation.culture].contentValues === null) {
+        currentElement.contentValueDocument.translations[translation.culture] = {
             contentValues: {
 
             }
         };
     }
 
-    // Set the translation in the map element culture/translation map
-    currentMapElement.contentValueDocument.translations[translation.culture].contentValues[translation.id] = translation.value;
+    // Set the translation in the element culture/translation map
+    currentElement.contentValueDocument.translations[translation.culture].contentValues[translation.id] = translation.value;
 
     dispatch({
-        type: SET_CURRENT_MAP_ELEMENT,
-        mapElement: currentMapElement
+        type: SET_CURRENT_ELEMENT,
+        element: currentElement,
+        kind: currentElementKind
     });
 };
 
@@ -120,15 +136,16 @@ export function setFlow(flow: FlowTranslationImage) {
     }
 }
 
-export function setCurrentMapElement(mapElement: MapElement) {
+export function setCurrentElement(element: Element, kind: string) {
     return {
-        type: SET_CURRENT_MAP_ELEMENT,
-        mapElement: mapElement
+        type: SET_CURRENT_ELEMENT,
+        element: element,
+        kind: kind
     }
 }
 
 // State
-export interface MapElementTranslation {
+export interface ElementTranslation {
     culture: string
     id: string
     value: string
@@ -149,23 +166,33 @@ export interface Culture {
     language: string
 }
 
-export interface MapElement {
+export interface Element {
     contentValueDocument: ContentValueDocument
     developerName: string
     id: string
+}
+
+export interface MapElement extends Element {
+
+}
+
+export interface PageElement extends Element {
+
 }
 
 export interface FlowTranslationImage {
     developerName: string
     id: string,
     mapElements: MapElement[]
+    pageElements: PageElement[]
 }
 
 export interface FlowState {
     cultures: Culture[] // TODO: This feels like the wrong place
-    currentMapElement: MapElement
+    currentElement: Element
+    currentElementKind: string
     flow: FlowTranslationImage
     isLoading: boolean
     isSaving: boolean
-    updatedTranslations: MapElementTranslation[] // TODO: This feels like the wrong place
+    updatedTranslations: ElementTranslation[] // TODO: This feels like the wrong place
 }

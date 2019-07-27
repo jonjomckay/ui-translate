@@ -2,7 +2,7 @@ import { FlowState, FlowRedux } from './FlowRedux';
 
 const initialState: FlowState = {
     cultures: [],
-    currentMapElement: {
+    currentElement: {
         developerName: '',
         contentValueDocument: {
             translations: {
@@ -11,10 +11,12 @@ const initialState: FlowState = {
         },
         id: ''
     },
+    currentElementKind: '',
     flow: {
         developerName: '',
         id: '',
-        mapElements: []
+        mapElements: [],
+        pageElements: []
     },
     isLoading: false,
     isSaving: false,
@@ -33,10 +35,11 @@ export function flowReducer(state = initialState, action: FlowRedux): FlowState 
                 ...state,
                 flow: action.flow
             };
-        case 'SET_CURRENT_MAP_ELEMENT':
+        case 'SET_CURRENT_ELEMENT':
             return {
                 ...state,
-                currentMapElement: action.mapElement
+                currentElement: action.element,
+                currentElementKind: action.kind
             };
         case 'SET_IS_LOADING':
             return {

@@ -8,6 +8,7 @@ interface TranslationInputProps {
     culture: string
     currentValue: [string, string]
     contentValueId: string
+    propertyName: string
     onChange(culture: string, id: string, value: string | undefined): void
 }
 
@@ -17,12 +18,12 @@ export default class TranslationInput extends React.Component<TranslationInputPr
     };
 
     render() {
-        const { currentValue, contentValueId } = this.props;
+        const { currentValue, propertyName } = this.props;
 
         return (
             <Form.Group as={ Row } controlId="formHorizontalEmail">
                 <Form.Label column sm={ 4 }>
-                    { contentValueId.replace('ContentValueId', '') }
+                    { propertyName.replace('ContentValueId', '') }
                 </Form.Label>
 
                 <Col sm={ 8 }>

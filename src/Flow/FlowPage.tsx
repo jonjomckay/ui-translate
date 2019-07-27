@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import {
     FlowTranslationImage,
     loadFlowAndCultures,
-    MapElement,
-    setCurrentMapElement
+    Element,
+    MapElement, PageElement,
+    setCurrentElement
 } from './FlowRedux';
 import { AppState } from '../store';
 import { Link } from 'react-navi';
@@ -17,24 +18,25 @@ interface FlowPageProps {
     id: string
     isLoading: boolean
     loadFlowAndCultures(id: string): void
-    setCurrentMapElement(mapElement: MapElement): void
+    setCurrentElement(element: Element, kind: string): void
 }
 
 // Extract
-interface FlowMapElementButtonProps {
+interface FlowElementButtonProps {
     flow: string
-    mapElement: MapElement
-    setCurrentMapElement(mapElement: MapElement): void
+    element: Element
+    kind: string
+    setCurrentElement(element: Element, kind: string): void
 }
 
 // Extract
-const FlowMapElementButton: React.FunctionComponent<FlowMapElementButtonProps> = ({ flow, mapElement, setCurrentMapElement }) => {
+const FlowElementButton: React.FunctionComponent<FlowElementButtonProps> = ({ flow, element, setCurrentElement, kind }) => {
     const onClick = () => {
-        setCurrentMapElement(mapElement);
+        setCurrentElement(element, kind);
     };
 
     return (
-        <Button as={ Link } href={ `/flow/${ flow }/map/${ mapElement.id }` } onClick={ onClick }>
+        <Button as={ Link } href={ `/flow/${ flow }/${ kind }/${ element.id }` } onClick={ onClick }>
             Translate
         </Button>
     )
@@ -56,12 +58,23 @@ class FlowPage extends React.Component<FlowPageProps> {
             )
         }
 
-        const elements = flow.mapElements.sort((a, b) => a.developerName.localeCompare(b.developerName)).map((mapElement: MapElement) => {
+        const mapElements = flow.mapElements.sort((a, b) => a.developerName.localeCompare(b.developerName)).map((element: MapElement) => {
             return (
-                <tr key={ mapElement.id }>
-                    <td>{ mapElement.developerName }</td>
+                <tr key={ element.id }>
+                    <td>{ element.developerName }</td>
                     <td>
-                        <FlowMapElementButton flow={ flow.id } mapElement={ mapElement } setCurrentMapElement={ this.props.setCurrentMapElement } />
+                        <FlowElementButton flow={ flow.id } kind="map" element={ element } setCurrentElement={ this.props.setCurrentElement } />
+                    </td>
+                </tr>
+            );
+        });
+
+        const pageElements = flow.pageElements.sort((a, b) => a.developerName.localeCompare(b.developerName)).map((element: PageElement) => {
+            return (
+                <tr key={ element.id }>
+                    <td>{ element.developerName }</td>
+                    <td>
+                        <FlowElementButton flow={ flow.id } kind="page" element={ element } setCurrentElement={ this.props.setCurrentElement } />
                     </td>
                 </tr>
             );
@@ -71,7 +84,7 @@ class FlowPage extends React.Component<FlowPageProps> {
             <div>
                 <h2>{ flow.developerName }</h2>
 
-                <h4>Map Elements</h4>
+                <h5>Map Elements</h5>
 
                 <Table>
                     <thead>
@@ -82,7 +95,22 @@ class FlowPage extends React.Component<FlowPageProps> {
                     </thead>
 
                     <tbody>
-                    { elements }
+                    { mapElements }
+                    </tbody>
+                </Table>
+
+                <h5>Page Elements</h5>
+
+                <Table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Translations</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    { pageElements }
                     </tbody>
                 </Table>
             </div>
@@ -99,7 +127,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = ({
     loadFlowAndCultures,
-    setCurrentMapElement
+    setCurrentElement
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlowPage);

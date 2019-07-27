@@ -10,12 +10,19 @@ import thunk from 'redux-thunk';
 import { rootReducer } from './store';
 import FlowPage from './Flow/FlowPage';
 import FlowsPage from './Flows/FlowsPage';
-import MapElementPage from './MapElement/MapElementPage';
+import ElementPage from './Element/ElementPage';
 
 const store = createStore(rootReducer, applyMiddleware(
     createLogger(),
     thunk
 ));
+
+const elementRoute = route(async req => {
+    return {
+        title: 'Translate Flow',
+        view: <ElementPage flow={ req.params.flow } />
+    }
+});
 
 const routes = mount({
     '/': route({
@@ -28,12 +35,8 @@ const routes = mount({
             view: <FlowPage id={ req.params.flow } />
         }
     }),
-    '/flow/:flow/map/:mapElement': route(async req => {
-        return {
-            title: 'Translate Flow',
-            view: <MapElementPage flow={ req.params.flow } />
-        }
-    }),
+    '/flow/:flow/map/:id': elementRoute,
+    '/flow/:flow/page/:id': elementRoute,
 });
 
 axios.defaults.headers = {
