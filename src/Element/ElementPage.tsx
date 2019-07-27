@@ -9,8 +9,6 @@ import {
 } from '../Flow/FlowRedux';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbItem from 'react-bootstrap/BreadcrumbItem';
 import TranslationInput from './TranslationInput';
 import LoadableButton from '../LoadableButton';
 import { addElementTranslation, loadElement, saveElement } from './ElementRedux';
@@ -115,18 +113,6 @@ class ElementPage extends React.Component<ElementPageProps> {
 
         return (
             <React.Fragment>
-                <Breadcrumb>
-                    <BreadcrumbItem>
-                        Flow
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                        Map Elements
-                    </BreadcrumbItem>
-                    <BreadcrumbItem active>
-                        { element.developerName }
-                    </BreadcrumbItem>
-                </Breadcrumb>
-
                 { availableCultures }
 
                 <hr />
