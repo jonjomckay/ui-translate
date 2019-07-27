@@ -11,6 +11,7 @@ import { rootReducer } from './store';
 import FlowPage from './Flow/FlowPage';
 import FlowsPage from './Flows/FlowsPage';
 import ElementPage from './Element/ElementPage';
+import Header from './Header/Header';
 import CulturesPage from './Cultures/CulturesPage';
 import CulturePage from './Culture/CulturePage';
 
@@ -62,8 +63,10 @@ const App: React.FC = () => {
     return (
         <Provider store={ store }>
             <Router routes={ routes }>
+                <Header />
+
                 <Suspense fallback={ null }>
-                    <Container>
+                    <Container style={{ marginTop: '1rem' }}>
                         <View />
                     </Container>
                 </Suspense>
