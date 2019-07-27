@@ -11,6 +11,8 @@ import { rootReducer } from './store';
 import FlowPage from './Flow/FlowPage';
 import FlowsPage from './Flows/FlowsPage';
 import ElementPage from './Element/ElementPage';
+import CulturesPage from './Cultures/CulturesPage';
+import CulturePage from './Culture/CulturePage';
 
 const store = createStore(rootReducer, applyMiddleware(
     createLogger(),
@@ -28,6 +30,16 @@ const routes = mount({
     '/': route({
         title: 'Flows',
         view: <FlowsPage />
+    }),
+    '/cultures': route({
+        title: 'Cultures',
+        view: <CulturesPage />
+    }),
+    '/cultures/:id': route(async req => {
+        return {
+            title: 'Culture',
+            view: <CulturePage id={ req.params.id } />
+        }
     }),
     '/flow/:flow': route(async req => {
         return {

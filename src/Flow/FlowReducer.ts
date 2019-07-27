@@ -14,6 +14,8 @@ const initialState: FlowState = {
     currentElementKind: '',
     flow: {
         developerName: '',
+        developerSummary: '',
+        editingToken: '',
         id: '',
         mapElements: [],
         navigationElements: [],

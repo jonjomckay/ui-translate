@@ -160,10 +160,13 @@ interface ContentValueDocument {
 }
 
 export interface Culture {
+    brand: string
     country: string
     developerName: string
+    developerSummary: string
     id: string
     language: string
+    variant: string
 }
 
 export interface Element {
