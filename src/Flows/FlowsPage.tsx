@@ -10,6 +10,7 @@ import Spinner from 'react-bootstrap/Spinner';
 interface FlowsProps {
     flows: Flow[]
     isLoading: boolean
+
     loadFlows(): void
 }
 
@@ -23,37 +24,34 @@ class FlowsPage extends React.Component<FlowsProps> {
 
         if (isLoading) {
             return (
-                <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+                <div style={ { marginTop: '4rem', textAlign: 'center' } }>
                     <Spinner animation="border" />
                 </div>
             )
         }
 
         return (
-            <Table className="flows">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
+            <div>
+                <h2 className="mb-3">Flows</h2>
 
-                <tbody>
-                {
-                    flows.map(flow =>
-                        (
-                            <tr key={ flow.id.id }>
-                                <td>{ flow.developerName }</td>
-                                <td>
-                                    <Button as={ Link } href={ `/flow/${ flow.id.id }` }>
-                                        Translate
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))
-                }
-                </tbody>
-            </Table>
+                <Table className="flows">
+                    <tbody>
+                    {
+                        flows.map(flow =>
+                            (
+                                <tr key={ flow.id.id }>
+                                    <td>{ flow.developerName }</td>
+                                    <td>
+                                        <Button as={ Link } href={ `/flow/${ flow.id.id }` }>
+                                            Translate
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))
+                    }
+                    </tbody>
+                </Table>
+            </div>
         );
     }
 }

@@ -56,6 +56,9 @@ class FlowPage extends React.Component<FlowPageProps> {
         return (
             <div>
                 <h2>{ flow.developerName }</h2>
+                <p>
+                    <i>{ flow.developerSummary }</i>
+                </p>
 
                 <FlowElementTable elements={ mapElements } title="Map Elements" />
                 <FlowElementTable elements={ navigationElements } title="Navigation Elements" />

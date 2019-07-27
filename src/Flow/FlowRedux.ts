@@ -58,7 +58,7 @@ export const saveElement = (element: Element): ThunkAction<Promise<void>, AppSta
         case 'group':
         case 'map':
         case 'navigation':
-            url = 'https://flow.boomi.com/api/translate/1/flow/' + state.flow.flow.id + '/d91031d7-1ddd-427c-a93c-16fc0c5756c5/element/' + state.flow.currentElementKind;
+            url = 'https://flow.boomi.com/api/translate/1/flow/' + state.flow.flow.id + '/' + state.flow.flow.editingToken + '/element/' + state.flow.currentElementKind;
             break;
         default:
             url = 'https://flow.boomi.com/api/translate/1/element/' + state.flow.currentElementKind;
@@ -174,6 +174,8 @@ export interface Element {
 
 export interface FlowTranslationImage {
     developerName: string
+    developerSummary: string
+    editingToken: string
     id: string,
     mapElements: Element[]
     navigationElements: Element[]

@@ -8,16 +8,9 @@ interface FlowElementTableProps {
 
 const FlowElementTable: React.FC<FlowElementTableProps> = ({ elements, title }) => (
     <div>
-        <h5>{ title }</h5>
+        <h4 className="mb-3">{ title }</h4>
 
         <Table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Translations</th>
-            </tr>
-            </thead>
-
             <tbody>
             { elements }
             </tbody>

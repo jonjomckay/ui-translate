@@ -11,8 +11,10 @@ interface FlowElementRowProps {
 
 const FlowElementRow: React.FC<FlowElementRowProps> = ({ element, flow, kind, setCurrentElement }) => (
     <tr key={ element.id }>
-        <td>{ element.developerName }</td>
-        <td>
+        <td className="col-lg-10" style={{ verticalAlign: 'middle' }}>
+            { element.developerName }
+        </td>
+        <td className="col-lg-2">
             <FlowElementButton flow={ flow } kind={ kind } element={ element } setCurrentElement={ setCurrentElement } />
         </td>
     </tr>
