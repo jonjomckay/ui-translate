@@ -30,6 +30,10 @@ const routes = mount({
         title: 'Cultures',
         view: <CulturesPage />
     }),
+    '/cultures/new': route({
+        title: 'Cultures',
+        view: <CulturePage />
+    }),
     '/cultures/:id': route(async req => {
         return {
             title: 'Culture',

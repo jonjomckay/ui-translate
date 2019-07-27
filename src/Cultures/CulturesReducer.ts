@@ -1,13 +1,16 @@
-import { Culture, FlowRedux, FlowState } from '../Flow/FlowRedux';
+import { Culture } from '../Flow/FlowRedux';
 import { CulturesRedux } from './CulturesRedux';
 
 interface CulturesState {
     cultures: Culture[]
+    cultureToDelete?: Culture
+    isDeleting: boolean
     isLoading: boolean
 }
 
 const initialState: CulturesState = {
     cultures: [],
+    isDeleting: false,
     isLoading: false
 };
 
@@ -18,10 +21,20 @@ export function culturesReducer(state = initialState, action: CulturesRedux): Cu
                 ...state,
                 cultures: action.cultures
             };
-        case 'SET_CULTURES_LOADING':
+        case 'SET_CULTURE_TO_DELETE':
             return {
                 ...state,
-                isLoading: action.isLoading
+                cultureToDelete: action.culture
+            };
+        case 'TOGGLE_CULTURES_DELETING':
+            return {
+                ...state,
+                isDeleting: !state.isDeleting
+            };
+        case 'TOGGLE_CULTURES_LOADING':
+            return {
+                ...state,
+                isLoading: !state.isLoading
             };
         default:
             return state;

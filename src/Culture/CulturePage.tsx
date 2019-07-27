@@ -9,13 +9,12 @@ import { FormControl, FormControlProps, FormGroup } from 'react-bootstrap';
 import FormText from 'react-bootstrap/FormText';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import LoadableButton from '../LoadableButton';
 
-interface CultureProps {
+interface CulturePageProps {
     culture: Culture
-    id: string
+    id?: string
     isLoading: boolean
     isSaving: boolean
 
@@ -24,9 +23,11 @@ interface CultureProps {
     setCultureField(field: string, value: string): void
 }
 
-class CulturePage extends React.Component<CultureProps> {
+class CulturePage extends React.Component<CulturePageProps> {
     componentDidMount(): void {
-        this.props.loadCulture(this.props.id)
+        if (this.props.id) {
+            this.props.loadCulture(this.props.id)
+        }
     }
 
     onChangeBrand = (e: React.FormEvent<FormControlProps & FormControl>) => {
