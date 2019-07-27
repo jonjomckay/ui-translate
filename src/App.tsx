@@ -14,6 +14,7 @@ import ElementPage from './Element/ElementPage';
 import Header from './Header/Header';
 import CulturesPage from './Cultures/CulturesPage';
 import CulturePage from './Culture/CulturePage';
+import { IconContext } from 'react-icons';
 
 const store = createStore(rootReducer, applyMiddleware(
     createLogger(),
@@ -57,15 +58,17 @@ axios.defaults.headers = {
 const App: React.FC = () => {
     return (
         <Provider store={ store }>
-            <Router routes={ routes }>
-                <Header />
+            <IconContext.Provider value={ { style: { verticalAlign: 'middle' } } }>
+                <Router routes={ routes }>
+                    <Header />
 
-                <Suspense fallback={ null }>
-                    <Container style={{ marginTop: '1rem' }}>
-                        <View />
-                    </Container>
-                </Suspense>
-            </Router>
+                    <Suspense fallback={ null }>
+                        <Container style={ { marginTop: '1rem' } }>
+                            <View />
+                        </Container>
+                    </Suspense>
+                </Router>
+            </IconContext.Provider>
         </Provider>
     );
 };
