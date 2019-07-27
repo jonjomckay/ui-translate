@@ -6,16 +6,15 @@ interface FlowElementRowProps {
     element: Element
     flow: string
     kind: string
-    setCurrentElement(element: Element, kind: string): void
 }
 
-const FlowElementRow: React.FC<FlowElementRowProps> = ({ element, flow, kind, setCurrentElement }) => (
+const FlowElementRow: React.FC<FlowElementRowProps> = ({ element, flow, kind }) => (
     <tr key={ element.id }>
         <td className="col-lg-10" style={{ verticalAlign: 'middle' }}>
             { element.developerName }
         </td>
         <td className="col-lg-2">
-            <FlowElementButton flow={ flow } kind={ kind } element={ element } setCurrentElement={ setCurrentElement } />
+            <FlowElementButton flow={ flow } kind={ kind } element={ element } />
         </td>
     </tr>
 );

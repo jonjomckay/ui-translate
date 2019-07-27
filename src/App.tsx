@@ -20,13 +20,6 @@ const store = createStore(rootReducer, applyMiddleware(
     thunk
 ));
 
-const elementRoute = route(async req => {
-    return {
-        title: 'Translate Flow',
-        view: <ElementPage flow={ req.params.flow } />
-    }
-});
-
 const routes = mount({
     '/': route({
         title: 'Flows',
@@ -48,10 +41,12 @@ const routes = mount({
             view: <FlowPage id={ req.params.flow } />
         }
     }),
-    '/flow/:flow/map/:id': elementRoute,
-    '/flow/:flow/navigation/:id': elementRoute,
-    '/flow/:flow/page/:id': elementRoute,
-    '/flow/:flow/value/:id': elementRoute,
+    '/flow/:flow/:kind/:id': route(async req => {
+        return {
+            title: 'Translate Flow',
+            view: <ElementPage flow={ req.params.flow } id={ req.params.id } kind={ req.params.kind } />
+        }
+    })
 });
 
 axios.defaults.headers = {

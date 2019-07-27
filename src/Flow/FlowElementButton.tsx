@@ -7,17 +7,11 @@ interface FlowElementButtonProps {
     flow: string
     element: Element
     kind: string
-    setCurrentElement(element: Element, kind: string): void
 }
 
-// Extract
-const FlowElementButton: React.FunctionComponent<FlowElementButtonProps> = ({ flow, element, setCurrentElement, kind }) => {
-    const onClick = () => {
-        setCurrentElement(element, kind);
-    };
-
+const FlowElementButton: React.FunctionComponent<FlowElementButtonProps> = ({ flow, element, kind }) => {
     return (
-        <Button as={ Link } href={ `/flow/${ flow }/${ kind }/${ element.id }` } onClick={ onClick }>
+        <Button as={ Link } href={ `/flow/${ flow }/${ kind }/${ element.id }` }>
             Translate
         </Button>
     )

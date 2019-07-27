@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import {
     FlowTranslationImage,
     Element,
-    loadFlowAndCultures,
-    setCurrentElement
+    loadFlow
 } from './FlowRedux';
 import { AppState } from '../store';
 import FlowElementRow from './FlowElementRow';
@@ -15,13 +14,12 @@ interface FlowPageProps {
     flow: FlowTranslationImage
     id: string
     isLoading: boolean
-    loadFlowAndCultures(id: string): void
-    setCurrentElement: typeof setCurrentElement
+    loadFlow(id: string): void
 }
 
 class FlowPage extends React.Component<FlowPageProps> {
     componentDidMount(): void {
-        this.props.loadFlowAndCultures(this.props.id)
+        this.props.loadFlow(this.props.id)
     }
 
     render() {
@@ -38,19 +36,19 @@ class FlowPage extends React.Component<FlowPageProps> {
         const sortByName = (a: Element, b: Element) => a.developerName.localeCompare(b.developerName);
 
         const mapElements = flow.mapElements.sort(sortByName).map((element: Element) => {
-            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="map" setCurrentElement={ this.props.setCurrentElement } />;
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="map" />;
         });
 
         const navigationElements = flow.navigationElements.sort(sortByName).map((element: Element) => {
-            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="navigation" setCurrentElement={ this.props.setCurrentElement } />;
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="navigation" />;
         });
 
         const pageElements = flow.pageElements.sort(sortByName).map((element: Element) => {
-            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="page" setCurrentElement={ this.props.setCurrentElement } />;
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="page" />;
         });
 
         const valueElements = flow.valueElements.sort(sortByName).map((element: Element) => {
-            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="value" setCurrentElement={ this.props.setCurrentElement } />;
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="value" />;
         });
 
         return (
@@ -77,8 +75,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = ({
-    loadFlowAndCultures,
-    setCurrentElement
+    loadFlow
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlowPage);
