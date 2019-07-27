@@ -1,46 +1,25 @@
-import React from 'react';
+import React  from 'react';
+import Spinner from 'react-bootstrap/Spinner';
 import { connect } from 'react-redux';
 import {
     FlowTranslationImage,
-    loadFlowAndCultures,
     Element,
-    MapElement, PageElement,
+    MapElement,
+    PageElement,
+    loadFlowAndCultures,
     setCurrentElement
 } from './FlowRedux';
 import { AppState } from '../store';
-import { Link } from 'react-navi';
-import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
-import Spinner from 'react-bootstrap/Spinner';
+import FlowElementRow from './FlowElementRow';
+import FlowElementTable from './FlowElementTable';
 
 interface FlowPageProps {
     flow: FlowTranslationImage
     id: string
     isLoading: boolean
     loadFlowAndCultures(id: string): void
-    setCurrentElement(element: Element, kind: string): void
+    setCurrentElement: typeof setCurrentElement
 }
-
-// Extract
-interface FlowElementButtonProps {
-    flow: string
-    element: Element
-    kind: string
-    setCurrentElement(element: Element, kind: string): void
-}
-
-// Extract
-const FlowElementButton: React.FunctionComponent<FlowElementButtonProps> = ({ flow, element, setCurrentElement, kind }) => {
-    const onClick = () => {
-        setCurrentElement(element, kind);
-    };
-
-    return (
-        <Button as={ Link } href={ `/flow/${ flow }/${ kind }/${ element.id }` } onClick={ onClick }>
-            Translate
-        </Button>
-    )
-};
 
 class FlowPage extends React.Component<FlowPageProps> {
     componentDidMount(): void {
@@ -58,61 +37,22 @@ class FlowPage extends React.Component<FlowPageProps> {
             )
         }
 
-        const mapElements = flow.mapElements.sort((a, b) => a.developerName.localeCompare(b.developerName)).map((element: MapElement) => {
-            return (
-                <tr key={ element.id }>
-                    <td>{ element.developerName }</td>
-                    <td>
-                        <FlowElementButton flow={ flow.id } kind="map" element={ element } setCurrentElement={ this.props.setCurrentElement } />
-                    </td>
-                </tr>
-            );
+        const sortByName = (a: Element, b: Element) => a.developerName.localeCompare(b.developerName);
+
+        const mapElements = flow.mapElements.sort(sortByName).map((element: MapElement) => {
+            return <FlowElementRow element={ element } flow={ flow.id } kind="map" setCurrentElement={ this.props.setCurrentElement } />;
         });
 
-        const pageElements = flow.pageElements.sort((a, b) => a.developerName.localeCompare(b.developerName)).map((element: PageElement) => {
-            return (
-                <tr key={ element.id }>
-                    <td>{ element.developerName }</td>
-                    <td>
-                        <FlowElementButton flow={ flow.id } kind="page" element={ element } setCurrentElement={ this.props.setCurrentElement } />
-                    </td>
-                </tr>
-            );
+        const pageElements = flow.pageElements.sort(sortByName).map((element: PageElement) => {
+            return <FlowElementRow element={ element } flow={ flow.id } kind="page" setCurrentElement={ this.props.setCurrentElement } />;
         });
 
         return (
             <div>
                 <h2>{ flow.developerName }</h2>
 
-                <h5>Map Elements</h5>
-
-                <Table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Translations</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    { mapElements }
-                    </tbody>
-                </Table>
-
-                <h5>Page Elements</h5>
-
-                <Table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Translations</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    { pageElements }
-                    </tbody>
-                </Table>
+                <FlowElementTable elements={ mapElements } title="Map Elements" />
+                <FlowElementTable elements={ pageElements } title="Page Elements" />
             </div>
         );
     }
