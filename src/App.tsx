@@ -36,7 +36,9 @@ const routes = mount({
         }
     }),
     '/flow/:flow/map/:id': elementRoute,
+    '/flow/:flow/navigation/:id': elementRoute,
     '/flow/:flow/page/:id': elementRoute,
+    '/flow/:flow/value/:id': elementRoute,
 });
 
 axios.defaults.headers = {

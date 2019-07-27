@@ -16,7 +16,9 @@ const initialState: FlowState = {
         developerName: '',
         id: '',
         mapElements: [],
-        pageElements: []
+        navigationElements: [],
+        pageElements: [],
+        valueElements: [],
     },
     isLoading: false,
     isSaving: false,

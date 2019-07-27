@@ -3,7 +3,7 @@ import { AppState } from '../store';
 import { Action } from 'redux';
 import axios from 'axios';
 
-export const SAVE_MAP_ELEMENT = "SAVE_MAP_ELEMENT";
+export const SAVE_ELEMENT = "SAVE_ELEMENT";
 export const SET_CULTURES = 'SET_CULTURES';
 export const SET_FLOW = 'SET_FLOW';
 export const SET_IS_LOADING = 'SET_IS_LOADING';
@@ -11,9 +11,9 @@ export const SET_IS_SAVING = 'SET_IS_SAVING';
 export const SET_CURRENT_ELEMENT = 'SET_CURRENT_ELEMENT';
 
 // Actions
-interface SaveMapElementAction {
-    type: typeof SAVE_MAP_ELEMENT
-    mapElement: MapElement
+interface SaveElementAction {
+    type: typeof SAVE_ELEMENT
+    element: Element
 }
 
 interface SetCulturesAction {
@@ -42,7 +42,7 @@ interface SetCurrentElement {
     kind: string
 }
 
-export type FlowRedux = SaveMapElementAction | SetCulturesAction | SetFlowAction | SetIsLoadingAction | SetIsSavingAction | SetCurrentElement;
+export type FlowRedux = SaveElementAction | SetCulturesAction | SetFlowAction | SetIsLoadingAction | SetIsSavingAction | SetCurrentElement;
 
 export const saveElement = (element: Element): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch, getState) => {
     const state = getState();
@@ -172,19 +172,13 @@ export interface Element {
     id: string
 }
 
-export interface MapElement extends Element {
-
-}
-
-export interface PageElement extends Element {
-
-}
-
 export interface FlowTranslationImage {
     developerName: string
     id: string,
-    mapElements: MapElement[]
-    pageElements: PageElement[]
+    mapElements: Element[]
+    navigationElements: Element[]
+    pageElements: Element[]
+    valueElements: Element[]
 }
 
 export interface FlowState {

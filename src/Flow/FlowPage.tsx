@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import {
     FlowTranslationImage,
     Element,
-    MapElement,
-    PageElement,
     loadFlowAndCultures,
     setCurrentElement
 } from './FlowRedux';
@@ -39,12 +37,20 @@ class FlowPage extends React.Component<FlowPageProps> {
 
         const sortByName = (a: Element, b: Element) => a.developerName.localeCompare(b.developerName);
 
-        const mapElements = flow.mapElements.sort(sortByName).map((element: MapElement) => {
-            return <FlowElementRow element={ element } flow={ flow.id } kind="map" setCurrentElement={ this.props.setCurrentElement } />;
+        const mapElements = flow.mapElements.sort(sortByName).map((element: Element) => {
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="map" setCurrentElement={ this.props.setCurrentElement } />;
         });
 
-        const pageElements = flow.pageElements.sort(sortByName).map((element: PageElement) => {
-            return <FlowElementRow element={ element } flow={ flow.id } kind="page" setCurrentElement={ this.props.setCurrentElement } />;
+        const navigationElements = flow.navigationElements.sort(sortByName).map((element: Element) => {
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="navigation" setCurrentElement={ this.props.setCurrentElement } />;
+        });
+
+        const pageElements = flow.pageElements.sort(sortByName).map((element: Element) => {
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="page" setCurrentElement={ this.props.setCurrentElement } />;
+        });
+
+        const valueElements = flow.valueElements.sort(sortByName).map((element: Element) => {
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="value" setCurrentElement={ this.props.setCurrentElement } />;
         });
 
         return (
@@ -52,7 +58,9 @@ class FlowPage extends React.Component<FlowPageProps> {
                 <h2>{ flow.developerName }</h2>
 
                 <FlowElementTable elements={ mapElements } title="Map Elements" />
+                <FlowElementTable elements={ navigationElements } title="Navigation Elements" />
                 <FlowElementTable elements={ pageElements } title="Page Elements" />
+                <FlowElementTable elements={ valueElements } title="Value Elements" />
             </div>
         );
     }
