@@ -1,13 +1,10 @@
 import React, { Suspense } from 'react';
 import { Router, View } from 'react-navi';
 import axios from 'axios';
-import { mount, route } from 'navi';
+import { map, Matcher, mount, redirect, route } from 'navi';
 import Container from 'react-bootstrap/Container';
-import { applyMiddleware, createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { createLogger } from 'redux-logger';
-import thunk from 'redux-thunk';
-import { rootReducer } from './store';
+import { connect } from 'react-redux';
+import { AppState } from './store';
 import FlowPage from './Flow/FlowPage';
 import FlowsPage from './Flows/FlowsPage';
 import ElementPage from './Element/ElementPage';
@@ -15,66 +12,86 @@ import Header from './Header/Header';
 import CulturesPage from './Cultures/CulturesPage';
 import CulturePage from './Culture/CulturePage';
 import { IconContext } from 'react-icons';
+import Login from './Login/Login';
 
-const store = createStore(rootReducer, applyMiddleware(
-    createLogger(),
-    thunk
-));
+function withAuthentication(matcher: Matcher<any>) {
+    return map((request, context: any) =>
+        context.isLoggedIn
+            ? matcher
+            : redirect(
+            '/login?redirectTo=' + encodeURIComponent(request.mountpath + request.search))
+    )
+}
 
 const routes = mount({
-    '/': route({
+    '/': withAuthentication(route({
         title: 'Flows',
         view: <FlowsPage />
+    })),
+    '/login': map(async (request, context: any) => {
+        if (context.isLoggedIn) {
+            return redirect(
+                request.params.redirectTo
+                    ? decodeURIComponent(request.params.redirectTo)
+                    : '/'
+            )
+        } else {
+            return route({
+                title: 'Login',
+                view: <Login />
+            })
+        }
     }),
-    '/cultures': route({
+    '/cultures': withAuthentication(route({
         title: 'Cultures',
         view: <CulturesPage />
-    }),
-    '/cultures/new': route({
+    })),
+    '/cultures/new': withAuthentication(route({
         title: 'Cultures',
         view: <CulturePage />
-    }),
-    '/cultures/:id': route(async req => {
+    })),
+    '/cultures/:id': withAuthentication(route(async req => {
         return {
             title: 'Culture',
             view: <CulturePage id={ req.params.id } />
         }
-    }),
-    '/flow/:flow': route(async req => {
+    })),
+    '/flow/:flow': withAuthentication(route(async req => {
         return {
             title: 'Translate Flow',
             view: <FlowPage id={ req.params.flow } />
         }
-    }),
-    '/flow/:flow/:kind/:id': route(async req => {
+    })),
+    '/flow/:flow/:kind/:id': withAuthentication(route(async req => {
         return {
             title: 'Translate Flow',
             view: <ElementPage flow={ req.params.flow } id={ req.params.id } kind={ req.params.kind } />
         }
-    })
+    }))
 });
 
-axios.defaults.headers = {
-    'Authorization': process.env['FLOW_TOKEN'],
-    'ManyWhoTenant': process.env['FLOW_TENANT']
-};
+interface AppProps {
+    isLoggedIn: boolean
+}
 
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ isLoggedIn }) => {
     return (
-        <Provider store={ store }>
-            <IconContext.Provider value={ { style: { verticalAlign: 'middle' } } }>
-                <Router routes={ routes }>
-                    <Header />
+        <IconContext.Provider value={ { style: { verticalAlign: 'middle' } } }>
+            <Router routes={ routes } context={{ isLoggedIn }}>
+                <Header />
 
-                    <Suspense fallback={ null }>
-                        <Container style={ { marginTop: '1rem' } }>
-                            <View />
-                        </Container>
-                    </Suspense>
-                </Router>
-            </IconContext.Provider>
-        </Provider>
+                <Suspense fallback={ null }>
+                    <Container style={ { marginTop: '1rem' } }>
+                        <View />
+                    </Container>
+                </Suspense>
+            </Router>
+        </IconContext.Provider>
     );
 };
 
-export default App;
+const mapStateToProps = (state: AppState) => ({
+    isLoggedIn: state.login.isLoggedIn
+});
+
+export default connect(mapStateToProps)(App);
