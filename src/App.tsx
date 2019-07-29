@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import ReactGA from 'react-ga';
 import { Router, View } from 'react-navi';
 import axios from 'axios';
 import { map, Matcher, mount, redirect, route } from 'navi';
@@ -14,6 +15,14 @@ import CulturePage from './Culture/CulturePage';
 import { IconContext } from 'react-icons';
 import Login from './Login/Login';
 
+function withTracking(matcher: Matcher<any>) {
+    return map((request, context: any) => {
+        ReactGA.pageview(request.originalUrl);
+
+        return matcher;
+    })
+}
+
 function withAuthentication(matcher: Matcher<any>) {
     return map((request, context: any) =>
         context.isLoggedIn
@@ -24,11 +33,11 @@ function withAuthentication(matcher: Matcher<any>) {
 }
 
 const routes = mount({
-    '/': withAuthentication(route({
+    '/': withAuthentication(withTracking(route({
         title: 'Flows',
         view: <FlowsPage />
-    })),
-    '/login': map(async (request, context: any) => {
+    }))),
+    '/login': withTracking(map(async (request, context: any) => {
         if (context.isLoggedIn) {
             return redirect(
                 request.params.redirectTo
@@ -41,33 +50,33 @@ const routes = mount({
                 view: <Login />
             })
         }
-    }),
-    '/cultures': withAuthentication(route({
+    })),
+    '/cultures': withAuthentication(withTracking(route({
         title: 'Cultures',
         view: <CulturesPage />
-    })),
-    '/cultures/new': withAuthentication(route({
+    }))),
+    '/cultures/new': withAuthentication(withTracking(route({
         title: 'Cultures',
         view: <CulturePage />
-    })),
-    '/cultures/:id': withAuthentication(route(async req => {
+    }))),
+    '/cultures/:id': withAuthentication(withTracking(route(async req => {
         return {
             title: 'Culture',
             view: <CulturePage id={ req.params.id } />
         }
-    })),
-    '/flow/:flow': withAuthentication(route(async req => {
+    }))),
+    '/flow/:flow': withAuthentication(withTracking(route(async req => {
         return {
             title: 'Translate Flow',
             view: <FlowPage id={ req.params.flow } />
         }
-    })),
-    '/flow/:flow/:kind/:id': withAuthentication(route(async req => {
+    }))),
+    '/flow/:flow/:kind/:id': withAuthentication(withTracking(route(async req => {
         return {
             title: 'Translate Flow',
             view: <ElementPage flow={ req.params.flow } id={ req.params.id } kind={ req.params.kind } />
         }
-    }))
+    })))
 });
 
 interface AppProps {
@@ -75,9 +84,11 @@ interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ isLoggedIn }) => {
+    ReactGA.initialize('UA-144851353-1');
+
     return (
         <IconContext.Provider value={ { style: { verticalAlign: 'middle' } } }>
-            <Router routes={ routes } context={{ isLoggedIn }}>
+            <Router routes={ routes } context={ { isLoggedIn } }>
                 <Header />
 
                 <Suspense fallback={ null }>

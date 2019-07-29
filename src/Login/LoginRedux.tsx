@@ -1,7 +1,9 @@
+import ReactGA from 'react-ga';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from '../store';
 import { Action } from 'redux';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 export const SET_TOKEN = 'SET_TOKEN';
 export const SET_TENANT = 'SET_TENANT';
@@ -36,6 +38,15 @@ export const setTenant = (id: string): ThunkAction<void, AppState, null, Action<
         'Authorization': state.login.token,
         'ManyWhoTenant': id
     };
+
+    const claims = jwtDecode<any>(state.login.token);
+
+    ReactGA.initialize('UA-144851353-1', {
+        debug: true,
+        gaOptions: {
+            userId: claims.sub
+        }
+    });
 
     dispatch({
         type: SET_TENANT,
