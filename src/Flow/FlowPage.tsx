@@ -35,19 +35,19 @@ class FlowPage extends React.Component<FlowPageProps> {
 
         const sortByName = (a: Element, b: Element) => a.developerName.localeCompare(b.developerName);
 
-        const mapElements = flow.mapElements.sort(sortByName).map((element: Element) => {
+        const mapElements = (flow.mapElements || []).sort(sortByName).map((element: Element) => {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="map" />;
         });
 
-        const navigationElements = flow.navigationElements.sort(sortByName).map((element: Element) => {
+        const navigationElements = (flow.navigationElements || []).sort(sortByName).map((element: Element) => {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="navigation" />;
         });
 
-        const pageElements = flow.pageElements.sort(sortByName).map((element: Element) => {
+        const pageElements = (flow.pageElements || []).sort(sortByName).map((element: Element) => {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="page" />;
         });
 
-        const valueElements = flow.valueElements.sort(sortByName).map((element: Element) => {
+        const valueElements = (flow.valueElements || []).sort(sortByName).map((element: Element) => {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="value" />;
         });
 
