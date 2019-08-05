@@ -70,10 +70,10 @@ export const loadElement = (flow: string, id: string, kind: string): ThunkAction
         case 'group':
         case 'map':
         case 'navigation':
-            url = 'https://flow.boomi.com/api/translate/1/flow/' + flow + '/f72e0a59-631b-4839-9320-5d105f5a4f75/element/' + kind;
+            url = 'https://uat.manywho.com/api/translate/1/flow/' + flow + '/f72e0a59-631b-4839-9320-5d105f5a4f75/element/' + kind;
             break;
         default:
-            url = 'https://flow.boomi.com/api/translate/1/element/' + kind;
+            url = 'https://uat.manywho.com/api/translate/1/element/' + kind;
             break;
     }
 
@@ -103,10 +103,10 @@ export const saveElement = (flow: string, element: Element, kind: string): Thunk
         case 'group':
         case 'map':
         case 'navigation':
-            url = 'https://flow.boomi.com/api/translate/1/flow/' + flow + '/f72e0a59-631b-4839-9320-5d105f5a4f75/element/' + kind;
+            url = 'https://uat.manywho.com/api/translate/1/flow/' + flow + '/f72e0a59-631b-4839-9320-5d105f5a4f75/element/' + kind;
             break;
         default:
-            url = 'https://flow.boomi.com/api/translate/1/element/' + kind;
+            url = 'https://uat.manywho.com/api/translate/1/element/' + kind;
             break;
     }
 

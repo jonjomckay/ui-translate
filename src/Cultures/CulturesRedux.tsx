@@ -51,7 +51,7 @@ export function toggleCulturesLoading() {
 export const deleteCulture = (culture: Culture): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
     dispatch(toggleCulturesDeleting());
 
-    axios.delete('https://flow.boomi.com/api/translate/1/culture/' + culture.id)
+    axios.delete('https://uat.manywho.com/api/translate/1/culture/' + culture.id)
         .then(() => {
             dispatch(loadCultures());
             dispatch(setCultureToDelete());
@@ -62,7 +62,7 @@ export const deleteCulture = (culture: Culture): ThunkAction<void, AppState, nul
 export const loadCultures = (): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
     dispatch(toggleCulturesLoading());
 
-    axios.get('https://flow.boomi.com/api/translate/1/culture')
+    axios.get('https://uat.manywho.com/api/translate/1/culture')
         .then(response => {
             dispatch({
                 type: SET_CULTURES,

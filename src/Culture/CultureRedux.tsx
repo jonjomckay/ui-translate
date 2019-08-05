@@ -43,7 +43,7 @@ export const loadCulture = (id: string): ThunkAction<void, AppState, null, Actio
         isLoading: true
     });
 
-    axios.get('https://flow.boomi.com/api/translate/1/culture/' + id)
+    axios.get('https://uat.manywho.com/api/translate/1/culture/' + id)
         .then(response => {
             dispatch({
                 type: SET_CULTURE,
@@ -63,7 +63,7 @@ export const saveCulture = (culture: Culture): ThunkAction<Promise<void>, AppSta
         isSaving: true
     });
 
-    return axios.post('https://flow.boomi.com/api/translate/1/culture', culture)
+    return axios.post('https://uat.manywho.com/api/translate/1/culture', culture)
         .then(response => {
             dispatch({
                 type: SET_CULTURE,

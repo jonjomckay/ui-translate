@@ -30,7 +30,7 @@ export const loadFlow = (id: string): ThunkAction<void, AppState, null, Action<s
         isLoading: true
     });
 
-    axios.get('https://flow.boomi.com/api/translate/1/flow/' + id)
+    axios.get('https://uat.manywho.com/api/translate/1/flow/' + id)
         .then(response => {
             dispatch({
                 type: SET_FLOW,
