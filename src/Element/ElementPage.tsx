@@ -85,6 +85,14 @@ class ElementPage extends React.Component<ElementPageProps> {
                     }
                 }
 
+                // If the current content value is for a type property, we should append the property's name for clarity
+                if (propertyName && propertyName.startsWith('properties.')) {
+                    let propertyIndex = propertyName.split('.')[1];
+                    if (propertyIndex) {
+                        propertyName = `${propertyName} (${element.properties[propertyIndex].developerName})`;
+                    }
+                }
+
                 return (
                     <Col lg={ 12 } key={ propertyName }>
                         <TranslationInput
