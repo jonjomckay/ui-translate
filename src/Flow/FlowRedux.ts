@@ -83,6 +83,7 @@ export interface FlowTranslationImage {
     mapElements: Element[]
     navigationElements: Element[]
     pageElements: Element[]
+    typeElements: Element[]
     valueElements: Element[]
 }
 

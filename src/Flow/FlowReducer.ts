@@ -9,6 +9,7 @@ const initialState: FlowState = {
         mapElements: [],
         navigationElements: [],
         pageElements: [],
+        typeElements: [],
         valueElements: [],
     },
     isLoading: false,

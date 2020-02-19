@@ -47,6 +47,10 @@ class FlowPage extends React.Component<FlowPageProps> {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="page" />;
         });
 
+        const typeElements = (flow.typeElements || []).sort(sortByName).map((element: Element) => {
+            return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="type" />;
+        });
+
         const valueElements = (flow.valueElements || []).sort(sortByName).map((element: Element) => {
             return <FlowElementRow element={ element } flow={ flow.id } key={ element.id } kind="value" />;
         });
@@ -61,6 +65,7 @@ class FlowPage extends React.Component<FlowPageProps> {
                 <FlowElementTable elements={ mapElements } title="Map Elements" />
                 <FlowElementTable elements={ navigationElements } title="Navigation Elements" />
                 <FlowElementTable elements={ pageElements } title="Page Elements" />
+                <FlowElementTable elements={ typeElements } title="Type Elements" />
                 <FlowElementTable elements={ valueElements } title="Value Elements" />
             </div>
         );
