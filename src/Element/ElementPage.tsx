@@ -75,7 +75,7 @@ class ElementPage extends React.Component<ElementPageProps> {
                 let currentValue = ['', ''] as [string, string];
 
                 // If there is a currently defined translation for this culture, find it
-                let cultureTranslations = element.contentValueDocument.translations[culture.id];
+                let cultureTranslations = element.contentValueDocument && element.contentValueDocument.translations[culture.id];
                 if (cultureTranslations && cultureTranslations.contentValues) {
                     let value = Object.entries(cultureTranslations.contentValues)
                         .find(([id]) => contentValueId === id);
