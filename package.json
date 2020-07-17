@@ -7,7 +7,7 @@
     "bootstrap": "^4.3.1",
     "flat": "^4.1.0",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "navi": "^0.13.3",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
